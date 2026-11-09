@@ -1,15 +1,24 @@
 # Evidence Index
 
-Only evidence that supports a specific technical claim is included. Environment addresses are redacted where they are not needed to validate the result.
+The public repo uses a sanitized text evidence record instead of raw desktop screenshots. This preserves the exact commands and observed results while avoiding disclosure of public IP addresses, Tailscale addresses, credentials, private keys, or unrelated workstation content.
 
-| File | What it proves |
-| --- | --- |
-| `images/01_baseline_security_controls.png` | Key only SSH baseline, Fail2ban activity, auditd watches, and active security services |
-| `images/02_ufw_public_ssh_baseline.png` | Initial UFW rule allowed TCP/22 from anywhere |
-| `images/03_ssh_before_hardening.png` | Effective OpenSSH values before Lynis driven remediation |
-| `images/04_ssh_after_hardening.png` | Effective OpenSSH values after remediation |
-| `images/05_private_vs_public_ssh_validation.png` | Private Tailscale TCP/22 succeeded while public TCP/22 failed |
-| `images/06_kernel_network_baseline.png` | Pre remediation sysctl values |
-| `images/07_kernel_hardening_and_exceptions.png` | Hardened sysctl values and remaining reviewed Lynis deviations |
+## Primary evidence
 
-Raw screenshots that exposed unnecessary addresses, unrelated desktop content, or repeated the same evidence were intentionally not published.
+[`validation-evidence.md`](validation-evidence.md) documents:
+
+- key only SSH authentication and disabled root login
+- Fail2ban SSH activity
+- auditd watch rules
+- security service status
+- the initial public SSH firewall exposure
+- Tailscale only SSH validation
+- effective SSH settings before and after hardening
+- Lynis hardening index improvement from 69 to 73
+- kernel and network hardening values
+- residual Lynis findings that were reviewed and intentionally retained
+
+## Supporting audit notes
+
+[`lynis/README.md`](lynis/README.md) records the Lynis version, baseline score, post remediation score, and scanner limitations observed during the lab.
+
+The original screenshots remain private supporting evidence and can be reproduced by following [`../docs/reproduction.md`](../docs/reproduction.md).
