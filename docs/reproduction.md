@@ -135,3 +135,14 @@ sudo grep -E 'different value than expected|KRNL-6000' /var/log/lynis.log
 ```
 
 Document any retained deviation with the operational reason for keeping it.
+
+
+## 11. Run the repository validation script
+
+The included script combines the non destructive checks used throughout the lab:
+
+```bash
+bash scripts/validate-host.sh
+```
+
+Review the output rather than treating the script as a pass or fail compliance tool. Network reachability from the administrative workstation still needs to be tested separately.
