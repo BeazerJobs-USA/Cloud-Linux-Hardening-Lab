@@ -63,47 +63,20 @@ The design separates Internet reachability from administrative reachability. SSH
 
 ## Evidence
 
-### Baseline host controls
+The public repository uses a sanitized command and results record rather than raw desktop screenshots. This keeps the technical proof reviewable without exposing public IP addresses, Tailscale addresses, credentials, or unrelated workstation content.
 
-The host already had key only SSH, root login disabled, Fail2ban, auditd watches, Tailscale, and a Wazuh agent running.
+See [`evidence/validation-evidence.md`](evidence/validation-evidence.md) for the observed before and after outputs covering:
 
-![Baseline security controls](evidence/images/01_baseline_security_controls.png)
-
-### Public SSH exposure identified
-
-UFW initially allowed TCP/22 from anywhere while XRDP was already restricted to \`tailscale0\`.
-
-![UFW public SSH baseline](evidence/images/02_ufw_public_ssh_baseline.png)
-
-### SSH configuration before remediation
-
-The effective OpenSSH configuration still used permissive defaults for session limits and forwarding features.
-
-![SSH before hardening](evidence/images/03_ssh_before_hardening.png)
-
-### SSH configuration after remediation
-
-The hardened configuration reduced authentication attempts and session count, disabled unused forwarding features, and increased logging.
-
-![SSH after hardening](evidence/images/04_ssh_after_hardening.png)
-
-### Private access succeeds while public SSH fails
-
-Windows connectivity testing confirmed that TCP/22 succeeded over Tailscale and failed against the public interface. Addresses were redacted before publication.
-
-![Private versus public SSH validation](evidence/images/05_private_vs_public_ssh_validation.png)
-
-### Kernel and network baseline
-
-The pre remediation sysctl review identified several values that differed from the selected hardening profile.
-
-![Kernel and network baseline](evidence/images/06_kernel_network_baseline.png)
-
-### Kernel remediation and accepted exceptions
-
-The selected kernel and network controls were hardened while three Lynis differences were retained after review: \`kernel.modules_disabled\`, \`kernel.unprivileged_bpf_disabled\`, and \`net.ipv4.conf.all.rp_filter\`.
-
-![Kernel hardening and exceptions](evidence/images/07_kernel_hardening_and_exceptions.png)
+- SSH authentication baseline
+- Fail2ban activity
+- auditd watches
+- active security services
+- initial UFW exposure
+- Tailscale only SSH validation
+- SSH hardening before and after
+- Lynis hardening index change from 69 to 73
+- kernel and network hardening
+- residual Lynis findings and accepted deviations
 
 ## Investigation and remediation cases
 
