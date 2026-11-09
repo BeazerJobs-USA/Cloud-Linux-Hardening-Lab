@@ -119,6 +119,12 @@ A new SSH session through Tailscale also succeeded after the kernel changes.
 
 See [`../evidence/validation-evidence.md`](../evidence/validation-evidence.md) for the effective SSH values before and after remediation, Lynis index change, sysctl values, active services, and the remaining KRNL-6000 deviations.
 
+## Monitoring validation
+
+Wazuh remained connected after the hardening work and recorded SSH configuration changes through custom Rule 100100. Wazuh Security Configuration Assessment also recorded relevant SSH controls, including `LogLevel`, changing from failed to passed.
+
+See [`../evidence/wazuh-validation.md`](../evidence/wazuh-validation.md) for the sanitized monitoring evidence.
+
 ## Assessment
 
 The value of the audit was not the score alone. The useful work was separating findings into controls that reduced realistic attack surface, settings that were already secure, and recommendations that conflicted with operational requirements. The resulting configuration is therefore documented as a set of deliberate security decisions rather than a checklist optimized for a scanner score.
