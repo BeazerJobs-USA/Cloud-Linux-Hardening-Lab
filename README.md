@@ -103,6 +103,14 @@ Wazuh Security Configuration Assessment also recorded several SSH controls chang
 
 See [docs/monitoring-validation.md](docs/monitoring-validation.md).
 
+## Validation automation
+
+A non destructive validation script is included at [`scripts/validate-host.sh`](scripts/validate-host.sh). It checks the effective SSH configuration, service state, selected sysctl values, UFW rules, Fail2ban, and auditd watches.
+
+A GitHub Actions workflow runs on pushes and pull requests to validate the shell script syntax and confirm that the core documentation and configuration artifacts remain present.
+
+This automation does not claim to replace host testing. It exists to keep the repository itself maintainable and reproducible.
+
 ## Case documentation
 
 1. [Case 001: Secure Linux Baseline and Host Controls](cases/case-001-secure-linux-baseline.md)
@@ -139,16 +147,22 @@ Cloud-Linux-Hardening-Lab/
 ├── configs/
 │   ├── 99-security-hardening.conf
 │   └── 99-ssh-security-hardening.conf
+├── .github/
+│   └── workflows/
+│       └── repo-checks.yml
 ├── docs/
 │   ├── architecture.md
 │   ├── decision-log.md
 │   ├── monitoring-validation.md
 │   └── reproduction.md
-└── evidence/
-    ├── README.md
-    ├── validation-evidence.md
-    └── lynis/
-        └── README.md
+├── evidence/
+│   ├── README.md
+│   ├── validation-evidence.md
+│   ├── wazuh-validation.md
+│   └── lynis/
+│       └── README.md
+└── scripts/
+    └── validate-host.sh
 ```
 
 ## Skills demonstrated
