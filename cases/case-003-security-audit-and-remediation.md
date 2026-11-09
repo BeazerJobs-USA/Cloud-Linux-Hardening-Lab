@@ -117,10 +117,7 @@ A new SSH session through Tailscale also succeeded after the kernel changes.
 
 ## Evidence
 
-- [`03_ssh_before_hardening.png`](../evidence/images/03_ssh_before_hardening.png)
-- [`04_ssh_after_hardening.png`](../evidence/images/04_ssh_after_hardening.png)
-- [`06_kernel_network_baseline.png`](../evidence/images/06_kernel_network_baseline.png)
-- [`07_kernel_hardening_and_exceptions.png`](../evidence/images/07_kernel_hardening_and_exceptions.png)
+See [`../evidence/validation-evidence.md`](../evidence/validation-evidence.md) for the effective SSH values before and after remediation, Lynis index change, sysctl values, active services, and the remaining KRNL-6000 deviations.
 
 ## Assessment
 
