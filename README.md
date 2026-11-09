@@ -78,6 +78,13 @@ See [`evidence/validation-evidence.md`](evidence/validation-evidence.md) for the
 - kernel and network hardening
 - residual Lynis findings and accepted deviations
 
+
+## Monitoring validation
+
+The host remained observable through Wazuh after hardening. The exported threat hunting report recorded 16 detections of the custom SSH configuration change rule, and Security Configuration Assessment showed relevant SSH controls such as `LogLevel` changing from failed to passed.
+
+See [docs/monitoring-validation.md](docs/monitoring-validation.md) for the evidence, interpretation, and compatibility caveats.
+
 ## Investigation and remediation cases
 
 1. [Case 001: Secure Linux Baseline and Host Controls](cases/case-001-secure-linux-baseline.md)
@@ -116,6 +123,7 @@ Cloud-Linux-Hardening-Lab/
 │   └── 99-ssh-security-hardening.conf
 ├── docs/
 │   ├── architecture.md
+│   ├── monitoring-validation.md
 │   └── reproduction.md
 └── evidence/
     ├── README.md
