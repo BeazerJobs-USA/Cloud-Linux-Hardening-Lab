@@ -242,3 +242,20 @@ These were reviewed rather than blindly changed. The rationale for retaining eac
 ## Evidence handling
 
 Raw screenshots were used during the lab but are not required to reproduce the claims above. Public documentation intentionally omits public IP addresses, Tailscale addresses, credentials, private keys, and unrelated desktop information.
+
+
+## 14. Wazuh monitoring validation
+
+The Wazuh manager continued receiving endpoint telemetry after the hardening changes.
+
+Observed report evidence included:
+
+```text
+Rule 100100  SSH configuration file modified on       Level 8   Count 16
+Rule 5715    sshd: authentication success             Level 3   Count 32
+Rule 5758    Maximum authentication attempts exceeded Level 8   Count 21
+```
+
+Wazuh Security Configuration Assessment also showed several SSH controls changing from failed to passed, including `LogLevel`, which corresponds to the change from INFO to VERBOSE.
+
+See [`wazuh-validation.md`](wazuh-validation.md) for the complete sanitized monitoring evidence and interpretation.
