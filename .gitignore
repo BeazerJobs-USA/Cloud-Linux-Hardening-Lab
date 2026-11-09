@@ -1,0 +1,22 @@
+# Secrets and local environment files
+.env
+.env.*
+*.pem
+*.key
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+secrets/
+
+# Raw logs and temporary evidence
+*.log
+raw-evidence/
+*.tmp
+*.bak
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
