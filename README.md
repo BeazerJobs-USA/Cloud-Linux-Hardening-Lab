@@ -1,5 +1,7 @@
 # Cloud Linux Hardening Lab
 
+![Repository checks](https://github.com/BeazerJobs-USA/Cloud-Linux-Hardening-Lab/actions/workflows/repo-checks.yml/badge.svg)
+
 A hands on Ubuntu cloud security project that reduces remote attack surface, moves administration to a private access path, hardens SSH and kernel controls, and validates every major change through connectivity tests, service checks, Lynis, auditd, Fail2ban, and Wazuh.
 
 ## 60 second review
@@ -66,7 +68,7 @@ The security boundary is not a nonstandard SSH port. OpenSSH still listens on po
 | Keep `kernel.unprivileged_bpf_disabled=2` | Unprivileged BPF remains disabled while the setting remains administratively reversible | Value was rechecked after remediation |
 | Keep `kernel.modules_disabled=0` | Avoid permanently blocking module loading until reboot in a learning lab | Documented as an accepted Lynis deviation |
 
-See [docs/decision-log.md](docs/decision-log.md) for the complete reasoning.
+See [docs/decision-log.md](docs/decision-log.md) for the complete reasoning and [docs/threat-model.md](docs/threat-model.md) for assets, trust boundaries, threats, assumptions, and residual risk.
 
 ## Evidence and validation
 
@@ -154,7 +156,8 @@ Cloud-Linux-Hardening-Lab/
 │   ├── architecture.md
 │   ├── decision-log.md
 │   ├── monitoring-validation.md
-│   └── reproduction.md
+│   ├── reproduction.md
+│   └── threat-model.md
 ├── evidence/
 │   ├── README.md
 │   ├── validation-evidence.md
