@@ -36,8 +36,7 @@ sudo ss -tulpn | grep -E ':22|:3389'
 
 ## Evidence
 
-- [`01_baseline_security_controls.png`](../evidence/images/01_baseline_security_controls.png)
-- [`02_ufw_public_ssh_baseline.png`](../evidence/images/02_ufw_public_ssh_baseline.png)
+The observed baseline commands and outputs are recorded in [`../evidence/validation-evidence.md`](../evidence/validation-evidence.md), including SSH authentication controls, Fail2ban status, auditd watches, service state, and the initial UFW rules.
 
 ## Analyst assessment
 
