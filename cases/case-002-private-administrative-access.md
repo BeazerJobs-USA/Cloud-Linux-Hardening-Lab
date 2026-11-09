@@ -40,8 +40,7 @@ A fresh SSH session was then established through Tailscale and the host identity
 
 ## Evidence
 
-- [`02_ufw_public_ssh_baseline.png`](../evidence/images/02_ufw_public_ssh_baseline.png)
-- [`05_private_vs_public_ssh_validation.png`](../evidence/images/05_private_vs_public_ssh_validation.png)
+The sanitized validation record in [`../evidence/validation-evidence.md`](../evidence/validation-evidence.md) documents the initial generic SSH rule, the Tailscale specific rule, and the Windows connectivity result showing the private path succeeded while the public path failed.
 
 ## Tradeoff
 
