@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 980" width="1600" height="980" role="img" aria-labelledby="ba-title ba-desc">
+  <title id="ba-title">Security Posture Before and After Hardening</title>
+  <desc id="ba-desc">Side-by-side comparison of documented security posture before and after Cloud Linux Hardening Lab remediation, distinguishing independently verified outcomes from documented audit metrics.</desc>
+  <defs>
+    <linearGradient id="ba-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080E1C"/>
+      <stop offset="100%" stop-color="#0D1628"/>
+    </linearGradient>
+    <marker id="arrow-post" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="980" fill="url(#ba-bg)"/>
+  <rect x="20" y="20" width="1560" height="940" rx="16" fill="none" stroke="#1E2F4B" stroke-width="1.5"/>
+
+  <!-- Header -->
+  <text x="56" y="72" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="34" font-weight="700" fill="#F8FAFC">Security Posture: Before vs. After Remediation</text>
+  <text x="56" y="106" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="18" fill="#94A3B8">Comparison of documented host exposure, SSH surface, kernel settings, and audit visibility</text>
+
+  <!-- Evidence Status Legend -->
+  <g transform="translate(1030, 50)">
+    <rect x="0" y="0" width="522" height="54" rx="10" fill="#111B2E" stroke="#223452" stroke-width="1.2"/>
+    <rect x="18" y="15" width="84" height="24" rx="6" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+    <text x="60" y="32" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">VERIFIED</text>
+    <text x="110" y="32" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13" fill="#CBD5E1">Screenshot / CLI proof</text>
+
+    <rect x="262" y="15" width="106" height="24" rx="6" fill="#1E293B" stroke="#64748B" stroke-width="1"/>
+    <text x="315" y="32" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#CBD5E1">DOCUMENTED</text>
+    <text x="378" y="32" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13" fill="#CBD5E1">Lab log / Advisory</text>
+  </g>
+
+  <!-- LEFT COLUMN: BEFORE -->
+  <g id="col-before" transform="translate(48, 134)">
+    <rect x="0" y="0" width="712" height="756" rx="16" fill="#151320" stroke="#7F1D1D" stroke-width="1.8"/>
+    <rect x="0" y="0" width="712" height="62" rx="16" fill="#2A121C"/>
+    <rect x="0" y="42" width="712" height="20" fill="#2A121C"/>
+    <circle cx="34" cy="31" r="8" fill="#EF4444"/>
+    <text x="54" y="38" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#FCA5A5">BEFORE HARDENING (BASELINE)</text>
+    <text x="688" y="37" text-anchor="end" font-family="Consolas, monospace" font-size="14" fill="#FDA4AF">Exposed Public SSH</text>
+
+    <!-- Card 1: Network Exposure -->
+    <rect x="22" y="84" width="668" height="122" rx="10" fill="#1B1726" stroke="#3F2433" stroke-width="1.2"/>
+    <text x="42" y="114" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" font-weight="700" fill="#F8FAFC">1. Public SSH Exposure</text>
+    <rect x="580" y="96" width="90" height="24" rx="6" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+    <text x="625" y="113" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">VERIFIED</text>
+    <text x="42" y="144" font-family="Consolas, monospace" font-size="15" fill="#FCA5A5">• UFW: 22/tcp &amp; 22/tcp (v6) ALLOW IN Anywhere</text>
+    <text x="42" y="168" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="15.5" fill="#CBD5E1">• Administrative SSH reachable directly from the Internet</text>
+    <text x="42" y="191" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="14.5" fill="#94A3B8">• XRDP (3389/tcp) was already scoped to tailscale0</text>
+
+    <!-- Card 2: SSH Auth Baseline -->
+    <rect x="22" y="220" width="668" height="106" rx="10" fill="#171A29" stroke="#2B344D" stroke-width="1.2"/>
+    <text x="42" y="250" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" font-weight="700" fill="#F8FAFC">2. Authentication Controls (Pre-Existing)</text>
+    <rect x="580" y="232" width="90" height="24" rx="6" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+    <text x="625" y="249" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">VERIFIED</text>
+    <text x="42" y="280" font-family="Consolas, monospace" font-size="15" fill="#93C5FD">• PermitRootLogin no  ·  PasswordAuth no  ·  Pubkey yes</text>
+    <text x="42" y="305" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="15.5" fill="#CBD5E1">• Key-only auth active, but exposed to constant public probing</text>
+
+    <!-- Card 3: OpenSSH Session Surface -->
+    <rect x="22" y="340" width="668" height="122" rx="10" fill="#1B1726" stroke="#3F2433" stroke-width="1.2"/>
+    <text x="42" y="370" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" font-weight="700" fill="#F8FAFC">3. OpenSSH Session &amp; Forwarding Defaults</text>
+    <rect x="580" y="352" width="90" height="24" rx="6" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+    <text x="625" y="369" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">VERIFIED</text>
+    <text x="42" y="400" font-family="Consolas, monospace" font-size="15" fill="#FCA5A5">• MaxAuthTries: 6  |  MaxSessions: 10  |  LogLevel: INFO</text>
+    <text x="42" y="424" font-family="Consolas, monospace" font-size="15" fill="#FCA5A5">• X11Forwarding: yes  |  TcpForwarding: yes  |  AgentFwd: yes</text>
+    <text x="42" y="448" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="14.5" fill="#94A3B8">• Unused session forwarding capabilities left enabled</text>
+
+    <!-- Card 4: Kernel & Network Defaults -->
+    <rect x="22" y="476" width="668" height="126" rx="10" fill="#1B1726" stroke="#3F2433" stroke-width="1.2"/>
+    <text x="42" y="506" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" font-weight="700" fill="#F8FAFC">4. Kernel &amp; IPv4 Baseline Values</text>
+    <rect x="564" y="488" width="106" height="24" rx="6" fill="#1E293B" stroke="#64748B" stroke-width="1"/>
+    <text x="617" y="505" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#CBD5E1">DOCUMENTED</text>
+    <text x="42" y="536" font-family="Consolas, monospace" font-size="14.5" fill="#FDE68A">• kernel.kptr_restrict=1  |  fs.suid_dumpable=2  |  sysrq=176</text>
+    <text x="42" y="560" font-family="Consolas, monospace" font-size="14.5" fill="#FDE68A">• fs.protected_fifos=1  |  log_martians=0  |  send_redirects=1</text>
+    <text x="42" y="584" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="14.5" fill="#94A3B8">• Permissive kernel/ICMP defaults flagged by local review</text>
+
+    <!-- Card 5: Baseline Audit & Monitoring -->
+    <rect x="22" y="616" width="668" height="120" rx="10" fill="#171A29" stroke="#2B344D" stroke-width="1.2"/>
+    <text x="42" y="646" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" font-weight="700" fill="#F8FAFC">5. Baseline Audit &amp; Active Monitoring</text>
+    <rect x="564" y="628" width="106" height="24" rx="6" fill="#1E293B" stroke="#64748B" stroke-width="1"/>
+    <text x="617" y="645" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#CBD5E1">DOCUMENTED</text>
+    <text x="42" y="676" font-family="Consolas, monospace" font-size="15" fill="#FBBF24">• Lynis 3.1.6 Hardening Index: 69 (261 tests, 42 suggestions)</text>
+    <text x="42" y="700" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="15" fill="#CBD5E1">• Wazuh agent, Fail2ban, and auditd already active at baseline</text>
+    <text x="42" y="722" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="14" fill="#94A3B8">• Wazuh SCA SSH checks (incl. LogLevel) reported as failed</text>
+  </g>
+
+  <!-- Center Transition Arrow -->
+  <g transform="translate(768, 456)">
+    <rect x="0" y="0" width="64" height="112" rx="12" fill="#0F2138" stroke="#0284C7" stroke-width="1.5"/>
+    <line x1="12" y1="56" x2="48" y2="56" stroke="#38BDF8" stroke-width="3" marker-end="url(#arrow-post)"/>
+    <text x="32" y="34" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#7DD3FC">HARDEN</text>
+    <text x="32" y="90" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#34D399">VERIFY</text>
+  </g>
+
+  <!-- RIGHT COLUMN: AFTER -->
+  <g id="col-after" transform="translate(840, 134)">
+    <rect x="0" y="0" width="712" height="756" rx="16" fill="#0D1C26" stroke="#059669" stroke-width="1.8"/>
+    <rect x="0" y="0" width="712" height="62" rx="16" fill="#0C2E2B"/>
+    <rect x="0" y="42" width="712" height="20" fill="#0C2E2B"/>
+    <circle cx="34" cy="31" r="8" fill="#10B981"/>
+    <text x="54" y="38" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#6EE7B7">AFTER HARDENING (VALIDATED)</text>
+    <text x="688" y="37" text-anchor="end" font-family="Consolas, monospace" font-size="14" fill="#38BDF8">Private Tailscale Access</text>
+
+    <!-- Card 1: Private Network Access -->
+    <rect x="22" y="84" width="668" height="122" rx="10" fill="#10252C" stroke="#10B981" stroke-width="1.2"/>
+    <text x="42" y="114" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" font-weight="700" fill="#F8FAFC">1. Private SSH Boundary Enforced</text>
+    <rect x="580" y="96" width="90" height="24" rx="6" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+    <text x="625" y="113" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">VERIFIED</text>
+    <text x="42" y="144" font-family="Consolas, monospace" font-size="15" fill="#6EE7B7">• UFW: 22/tcp &amp; 3389/tcp allowed ONLY on tailscale0</text>
+    <text x="42" y="168" font-family="Consolas, monospace" font-size="15" fill="#38BDF8">• Test-NetConnection: Tailscale=True  |  Public=False</text>
+    <text x="42" y="191" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="14.5" fill="#CBD5E1">• Generic IPv4 &amp; IPv6 public SSH rules deleted cleanly</text>
+
+    <!-- Card 2: Auth & Services Preserved -->
+    <rect x="22" y="220" width="668" height="106" rx="10" fill="#10252C" stroke="#1F4A47" stroke-width="1.2"/>
+    <text x="42" y="250" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" font-weight="700" fill="#F8FAFC">2. Authentication &amp; Core Services Preserved</text>
+    <rect x="580" y="232" width="90" height="24" rx="6" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+    <text x="625" y="249" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">VERIFIED</text>
+    <text x="42" y="280" font-family="Consolas, monospace" font-size="15" fill="#6EE7B7">• Key-only auth intact  |  ssh service: active post-reload</text>
+    <text x="42" y="305" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="15.5" fill="#CBD5E1">• Private administrative reachability confirmed without lockout</text>
+
+    <!-- Card 3: Hardened OpenSSH -->
+    <rect x="22" y="340" width="668" height="122" rx="10" fill="#10252C" stroke="#10B981" stroke-width="1.2"/>
+    <text x="42" y="370" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" font-weight="700" fill="#F8FAFC">3. OpenSSH Hardening Applied (sshd -T)</text>
+    <rect x="580" y="352" width="90" height="24" rx="6" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+    <text x="625" y="369" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">VERIFIED</text>
+    <text x="42" y="400" font-family="Consolas, monospace" font-size="15" fill="#6EE7B7">• MaxAuthTries: 3  |  MaxSessions: 2  |  LogLevel: VERBOSE</text>
+    <text x="42" y="424" font-family="Consolas, monospace" font-size="15" fill="#6EE7B7">• X11Forwarding: no  |  TcpForwarding: no  |  AgentFwd: no</text>
+    <text x="42" y="448" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="14.5" fill="#CBD5E1">• Syntax validated (sshd -t) via dedicated drop-in config</text>
+
+    <!-- Card 4: Kernel & Network Tuning -->
+    <rect x="22" y="476" width="668" height="126" rx="10" fill="#10252C" stroke="#10B981" stroke-width="1.2"/>
+    <text x="42" y="506" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" font-weight="700" fill="#F8FAFC">4. Kernel &amp; IPv4 Controls + Documented Exceptions</text>
+    <rect x="580" y="488" width="90" height="24" rx="6" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+    <text x="625" y="505" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">VERIFIED</text>
+    <text x="42" y="536" font-family="Consolas, monospace" font-size="14.5" fill="#6EE7B7">• kptr_restrict=2 · suid_dumpable=0 · sysrq=0 · fifos=2</text>
+    <text x="42" y="560" font-family="Consolas, monospace" font-size="14.5" fill="#6EE7B7">• log_martians=1 · send_redirects=0 · bpf_jit_harden=2</text>
+    <text x="42" y="584" font-family="Consolas, monospace" font-size="13.5" fill="#FDE68A">• Retained: rp_filter=2, unprivileged_bpf=2, modules_disabled=0</text>
+
+    <!-- Card 5: Audit & Wazuh Verification -->
+    <rect x="22" y="616" width="668" height="120" rx="10" fill="#122136" stroke="#8B5CF6" stroke-width="1.2"/>
+    <text x="42" y="646" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" font-weight="700" fill="#F8FAFC">5. Audit Signal &amp; Wazuh Telemetry Confirmed</text>
+    <rect x="470" y="628" width="104" height="24" rx="6" fill="#1E293B" stroke="#64748B" stroke-width="1"/>
+    <text x="522" y="645" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#CBD5E1">DOCUMENTED</text>
+    <rect x="582" y="628" width="88" height="24" rx="6" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+    <text x="626" y="645" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">VERIFIED</text>
+    <text x="42" y="676" font-family="Consolas, monospace" font-size="15" fill="#7DD3FC">• Lynis Hardening Index: 69 → 73 (after SSH changes)</text>
+    <text x="42" y="700" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="15" fill="#DDD6FE">• Wazuh: Agent active (1), Rule 100100 (16), SCA LogLevel passed</text>
+    <text x="42" y="722" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#94A3B8">• Advisory caveat: Lynis &amp; CIS 24.04 SCA run against Ubuntu 26.04</text>
+  </g>
+
+  <!-- Bottom Context Note -->
+  <text x="56" y="928" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="15" fill="#94A3B8">Note: Lynis Hardening Index (69 → 73) is a tool-specific signal after SSH remediation, not an overall percentage security rating or compliance guarantee.</text>
+</svg>

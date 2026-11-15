@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" role="img" aria-labelledby="cover-title cover-desc">
+  <title id="cover-title">Cloud Linux Hardening Lab</title>
+  <desc id="cover-desc">Project cover banner illustrating Ubuntu cloud server hardening with Tailscale private SSH access, UFW firewall restriction, OpenSSH hardening, kernel sysctl controls, and Wazuh monitoring.</desc>
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070D19"/>
+      <stop offset="55%" stop-color="#0B1324"/>
+      <stop offset="100%" stop-color="#0E1A30"/>
+    </linearGradient>
+    <linearGradient id="accent-line" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#0EA5E9" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#0EA5E9" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="card-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#132038" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#0E1729" stop-opacity="0.95"/>
+    </linearGradient>
+    <pattern id="subtle-grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#1E293B" stroke-width="1" stroke-opacity="0.45"/>
+    </pattern>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981"/>
+    </marker>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1920" height="1080" fill="url(#bg-grad)"/>
+  <rect width="1920" height="1080" fill="url(#subtle-grid)"/>
+
+  <!-- Top & Bottom Structural Accent Rules -->
+  <rect x="0" y="0" width="1920" height="6" fill="#0EA5E9"/>
+  <rect x="96" y="72" width="1728" height="936" rx="20" fill="none" stroke="#1E304D" stroke-width="1.5"/>
+
+  <!-- Left Column: Header, Title, Subtitle -->
+  <g id="hero-copy">
+    <!-- Category Pill -->
+    <rect x="144" y="136" width="720" height="42" rx="21" fill="#0F233D" stroke="#1E4B78" stroke-width="1.5"/>
+    <circle cx="172" cy="157" r="6" fill="#38BDF8"/>
+    <text x="192" y="163" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="18" font-weight="600" letter-spacing="1.6" fill="#7DD3FC">UBUNTU CLOUD SECURITY  •  PRIVATE ADMINISTRATIVE ACCESS LAB</text>
+
+    <!-- Main Title -->
+    <text x="144" y="276" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="76" font-weight="700" fill="#F8FAFC" letter-spacing="-1">Cloud Linux</text>
+    <text x="144" y="366" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="76" font-weight="700" fill="#38BDF8" letter-spacing="-1">Hardening Lab</text>
+
+    <!-- Divider Accent -->
+    <rect x="144" y="402" width="520" height="4" rx="2" fill="url(#accent-line)"/>
+
+    <!-- Concise Subtitle -->
+    <text x="144" y="462" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="27" font-weight="400" fill="#CBD5E1">Eliminating public SSH exposure on an Ubuntu cloud VM via</text>
+    <text x="144" y="502" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="27" font-weight="400" fill="#CBD5E1">Tailscale private access, UFW interface restriction, OpenSSH</text>
+    <text x="144" y="542" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="27" font-weight="400" fill="#CBD5E1">hardening, kernel sysctl controls, and Wazuh monitoring.</text>
+
+    <!-- Key Facts Tag Row -->
+    <g id="meta-chips" transform="translate(144, 594)">
+      <rect x="0" y="0" width="212" height="44" rx="8" fill="#13223B" stroke="#263B5E" stroke-width="1.2"/>
+      <text x="18" y="28" font-family="Consolas, monospace" font-size="18" fill="#94A3B8">OS: <tspan fill="#E2E8F0" font-weight="700">Ubuntu 26.04</tspan></text>
+
+      <rect x="228" y="0" width="248" height="44" rx="8" fill="#13223B" stroke="#263B5E" stroke-width="1.2"/>
+      <text x="246" y="28" font-family="Consolas, monospace" font-size="18" fill="#94A3B8">Access: <tspan fill="#38BDF8" font-weight="700">tailscale0</tspan></text>
+
+      <rect x="492" y="0" width="268" height="44" rx="8" fill="#13223B" stroke="#263B5E" stroke-width="1.2"/>
+      <text x="510" y="28" font-family="Consolas, monospace" font-size="18" fill="#94A3B8">Lynis: <tspan fill="#10B981" font-weight="700">69 → 73 (SSH)</tspan></text>
+    </g>
+  </g>
+
+  <!-- Right Column: Minimalist Security Boundary Schematic -->
+  <g id="cover-schematic" transform="translate(1028, 146)">
+    <rect x="0" y="0" width="756" height="534" rx="16" fill="url(#card-grad)" stroke="#243857" stroke-width="1.5"/>
+    <text x="32" y="42" font-family="Consolas, monospace" font-size="16" font-weight="700" letter-spacing="1.2" fill="#64748B">BOUNDARY MODEL  //  PRIVATE ADMINISTRATION</text>
+    <line x1="32" y1="60" x2="724" y2="60" stroke="#1E304D" stroke-width="1"/>
+
+    <!-- Node 1: Public Internet (Blocked) -->
+    <rect x="34" y="96" width="242" height="118" rx="12" fill="#1A1523" stroke="#7F1D1D" stroke-width="1.5"/>
+    <circle cx="62" cy="130" r="10" fill="#EF4444" fill-opacity="0.2" stroke="#EF4444" stroke-width="1.5"/>
+    <path d="M 57 125 L 67 135 M 67 125 L 57 135" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
+    <text x="84" y="136" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="20" font-weight="700" fill="#FCA5A5">Public Internet</text>
+    <text x="54" y="168" font-family="Consolas, monospace" font-size="16" fill="#CBD5E1">TCP/22 Direct Path</text>
+    <text x="54" y="192" font-family="Consolas, monospace" font-size="16" font-weight="700" fill="#F87171">STATUS: BLOCKED</text>
+
+    <!-- Node 2: Admin Workstation via Tailscale -->
+    <rect x="34" y="256" width="242" height="132" rx="12" fill="#0F253E" stroke="#0284C7" stroke-width="1.8"/>
+    <rect x="52" y="280" width="22" height="16" rx="3" fill="none" stroke="#38BDF8" stroke-width="2"/>
+    <line x1="57" y1="302" x2="69" y2="302" stroke="#38BDF8" stroke-width="2"/>
+    <text x="86" y="294" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="20" font-weight="700" fill="#F8FAFC">Admin Workstation</text>
+    <text x="54" y="328" font-family="Consolas, monospace" font-size="16" fill="#7DD3FC">Interface: tailscale0</text>
+    <text x="54" y="352" font-family="Consolas, monospace" font-size="16" fill="#CBD5E1">Key-Only SSH (TCP/22)</text>
+    <text x="54" y="374" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#34D399">STATUS: VERIFIED</text>
+
+    <!-- Arrows into UFW Shield -->
+    <line x1="276" y1="155" x2="352" y2="155" stroke="#EF4444" stroke-width="2" stroke-dasharray="6,6"/>
+    <circle cx="352" cy="155" r="14" fill="#2A1219" stroke="#EF4444" stroke-width="2"/>
+    <path d="M 346 149 L 358 161 M 358 149 L 346 161" stroke="#EF4444" stroke-width="2.2" stroke-linecap="round"/>
+
+    <line x1="276" y1="322" x2="366" y2="322" stroke="#38BDF8" stroke-width="2.5" marker-end="url(#arrow-cyan)"/>
+
+    <!-- Node 3: Hardened Ubuntu Cloud VM -->
+    <rect x="378" y="96" width="346" height="292" rx="14" fill="#101D33" stroke="#38BDF8" stroke-width="1.8"/>
+    <!-- Shield Icon -->
+    <path d="M 414 122 L 428 128 L 428 142 C 428 151 421 157 414 160 C 407 157 400 151 400 142 L 400 128 Z" fill="#0EA5E9" fill-opacity="0.2" stroke="#38BDF8" stroke-width="2"/>
+    <text x="444" y="148" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#F8FAFC">Ubuntu Cloud Host</text>
+
+    <rect x="400" y="176" width="302" height="44" rx="8" fill="#162642" stroke="#253E66" stroke-width="1"/>
+    <text x="416" y="204" font-family="Consolas, monospace" font-size="15.5" fill="#E2E8F0">UFW: <tspan fill="#38BDF8">deny inbound</tspan> + tailscale0</text>
+
+    <rect x="400" y="232" width="302" height="44" rx="8" fill="#162642" stroke="#253E66" stroke-width="1"/>
+    <text x="416" y="260" font-family="Consolas, monospace" font-size="15.5" fill="#E2E8F0">OpenSSH: <tspan fill="#34D399">MaxAuth 3</tspan> · <tspan fill="#34D399">VERBOSE</tspan></text>
+
+    <rect x="400" y="288" width="302" height="44" rx="8" fill="#162642" stroke="#253E66" stroke-width="1"/>
+    <text x="416" y="316" font-family="Consolas, monospace" font-size="15.5" fill="#E2E8F0">Kernel: <tspan fill="#FBBF24">sysctl</tspan> + <tspan fill="#FBBF24">Fail2ban</tspan></text>
+
+    <rect x="400" y="344" width="302" height="30" rx="6" fill="#0E2924" stroke="#10B981" stroke-width="1"/>
+    <text x="416" y="364" font-family="Consolas, monospace" font-size="14.5" fill="#6EE7B7">auditd watches active (7 rules)</text>
+
+    <!-- Bottom Telemetry Strip inside schematic -->
+    <line x1="551" y1="388" x2="551" y2="424" stroke="#10B981" stroke-width="2" marker-end="url(#arrow-green)"/>
+    <rect x="34" y="428" width="690" height="74" rx="10" fill="#121E34" stroke="#2A4268" stroke-width="1.2"/>
+    <circle cx="64" cy="465" r="7" fill="#10B981"/>
+    <text x="84" y="458" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" font-weight="700" fill="#F8FAFC">Wazuh Telemetry &amp; Configuration Monitoring</text>
+    <text x="84" y="484" font-family="Consolas, monospace" font-size="14" fill="#94A3B8">Agent: vultr-security-lab  |  Rule 100100 (SSH changes)  |  SCA LogLevel Passed</text>
+  </g>
+
+  <!-- Bottom 4-Pillar Strip -->
+  <g id="pillars" transform="translate(144, 728)">
+    <!-- Pillar 1 -->
+    <rect x="0" y="0" width="388" height="224" rx="14" fill="url(#card-grad)" stroke="#233757" stroke-width="1.5"/>
+    <rect x="24" y="24" width="44" height="44" rx="10" fill="#0F2947" stroke="#0284C7" stroke-width="1.2"/>
+    <path d="M 38 46 L 54 46 M 46 38 L 46 54" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="84" y="46" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#F8FAFC">Private Access</text>
+    <text x="84" y="68" font-family="Consolas, monospace" font-size="15" fill="#38BDF8">UFW + TAILSCALE</text>
+    <text x="24" y="114" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" fill="#CBD5E1">Removed generic public TCP/22 rules</text>
+    <text x="24" y="142" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" fill="#CBD5E1">after verifying private Tailscale access.</text>
+    <text x="24" y="188" font-family="Consolas, monospace" font-size="16" fill="#34D399">Private: True  |  Public: False</text>
+
+    <!-- Pillar 2 -->
+    <rect x="414" y="0" width="388" height="224" rx="14" fill="url(#card-grad)" stroke="#233757" stroke-width="1.5"/>
+    <rect x="438" y="24" width="44" height="44" rx="10" fill="#0F2947" stroke="#0284C7" stroke-width="1.2"/>
+    <rect x="451" y="42" width="18" height="14" rx="3" fill="none" stroke="#38BDF8" stroke-width="2"/>
+    <path d="M 455 42 V 37 C 455 34 465 34 465 37 V 42" fill="none" stroke="#38BDF8" stroke-width="2"/>
+    <text x="498" y="46" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#F8FAFC">OpenSSH Hardening</text>
+    <text x="498" y="68" font-family="Consolas, monospace" font-size="15" fill="#38BDF8">DROP-IN CONFIG + VALIDATION</text>
+    <text x="438" y="114" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" fill="#CBD5E1">Tightened MaxAuthTries (3), MaxSessions (2),</text>
+    <text x="438" y="142" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" fill="#CBD5E1">disabled forwarding, set VERBOSE logs.</text>
+    <text x="438" y="188" font-family="Consolas, monospace" font-size="16" fill="#34D399">sshd -t passed  |  sshd -T verified</text>
+
+    <!-- Pillar 3 -->
+    <rect x="828" y="0" width="388" height="224" rx="14" fill="url(#card-grad)" stroke="#233757" stroke-width="1.5"/>
+    <rect x="852" y="24" width="44" height="44" rx="10" fill="#0F2947" stroke="#0284C7" stroke-width="1.2"/>
+    <circle cx="874" cy="46" r="10" fill="none" stroke="#38BDF8" stroke-width="2"/>
+    <circle cx="874" cy="46" r="3" fill="#38BDF8"/>
+    <text x="912" y="46" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#F8FAFC">Audit &amp; Kernel</text>
+    <text x="912" y="68" font-family="Consolas, monospace" font-size="15" fill="#38BDF8">LYNIS + SYSCTL TUNING</text>
+    <text x="852" y="114" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" fill="#CBD5E1">Applied kernel &amp; IPv4 controls; retained</text>
+    <text x="852" y="142" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" fill="#CBD5E1">rp_filter=2 for Tailscale compatibility.</text>
+    <text x="852" y="188" font-family="Consolas, monospace" font-size="16" fill="#FBBF24">3 KRNL-6000 exceptions documented</text>
+
+    <!-- Pillar 4 -->
+    <rect x="1242" y="0" width="390" height="224" rx="14" fill="url(#card-grad)" stroke="#233757" stroke-width="1.5"/>
+    <rect x="1266" y="24" width="44" height="44" rx="10" fill="#0F2947" stroke="#0284C7" stroke-width="1.2"/>
+    <polyline points="1274,52 1282,44 1288,48 1300,36" fill="none" stroke="#38BDF8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="1326" y="46" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#F8FAFC">Verified Telemetry</text>
+    <text x="1326" y="68" font-family="Consolas, monospace" font-size="15" fill="#38BDF8">WAZUH + AUDITD + FAIL2BAN</text>
+    <text x="1266" y="114" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" fill="#CBD5E1">Confirmed ongoing endpoint monitoring</text>
+    <text x="1266" y="142" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="19" fill="#CBD5E1">and SSH config change visibility.</text>
+    <text x="1266" y="188" font-family="Consolas, monospace" font-size="16" fill="#34D399">Agent active  |  5 services active</text>
+  </g>
+</svg>
