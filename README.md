@@ -44,7 +44,7 @@ Ubuntu cloud VM hardening lab: I removed direct public SSH exposure by moving ad
 | **Kernel & IPv4 Controls** | `kptr_restrict=1`, `suid_dumpable=2`, `sysrq=176`, `log_martians=0`, `send_redirects=1` | `kptr_restrict=2`, `suid_dumpable=0`, `sysrq=0`, `log_martians=1`, `send_redirects=0` | **VERIFIED** |
 | **Accepted Exceptions** | `rp_filter=2`, `unprivileged_bpf_disabled=2`, `modules_disabled=0` | Intentionally retained for Tailscale & lab reversibility | **VERIFIED** |
 | **Lynis Hardening Index** | `69` across 261 baseline tests | `73` after SSH remediation *(Lynis score, not a compliance grade)* | **DOCUMENTED** |
-| **Wazuh Telemetry** | Agent active (`vultr-security-lab`) | Active (`1`), `Rule 100100` (`16`), SCA `LogLevel` passed | **VERIFIED** (dashboard) / **DOCUMENTED** (report) |
+| **Wazuh Telemetry** | Agent active (`vultr-security-lab`) | Active (`1`), Disconnected (`0`); `Rule 100100` (`16`), SCA `LogLevel` passed | **VERIFIED** (agent status, dashboard) / **DOCUMENTED** (report) |
 
 ---
 
@@ -111,6 +111,10 @@ Cropped and annotated captures from my terminal sessions and the Wazuh dashboard
 ![Annotated Wazuh Threat Hunting dashboard showing active vultr-security-lab telemetry](assets/evidence/06-wazuh-monitoring-validation.png)
 *One-month Wazuh Threat Hunting view (manager hostname redacted to `[WAZUH_MGR]`) for `vultr-security-lab`: `11,857` events, `6,537` authentication failures, and `0` Level 12+ alerts. The alert charts show quiet periods around Oct 19–30 and Nov 2–3.*
 
+### 7. Wazuh Agent Status
+![Wazuh Overview showing one active agent, zero disconnected, and last-24-hour alert counts by severity](assets/evidence/07-wazuh-agent-status.png)
+*Wazuh Overview during validation: `Active (1)`, `Disconnected (0)`, and no critical (level 15+) or high (level 12–14) alerts in the previous 24 hours (`85` medium, `1,345` low).*
+
 ---
 
 ## Technical Implementation and Validation
@@ -153,7 +157,8 @@ Cloud-Linux-Hardening-Lab/
 │       ├── 03-private-vs-public-ssh-validation.png
 │       ├── 04-openssh-hardening-validation.png
 │       ├── 05-lynis-krnl-and-sysctl-validation.png
-│       └── 06-wazuh-monitoring-validation.png
+│       ├── 06-wazuh-monitoring-validation.png
+│       └── 07-wazuh-agent-status.png
 ├── cases/
 │   ├── case-001-secure-linux-baseline.md
 │   ├── case-002-private-administrative-access.md

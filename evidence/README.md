@@ -1,6 +1,6 @@
 # Evidence Index
 
-Sanitized command records plus six cropped, annotated screenshots under [`../assets/evidence/`](../assets/evidence/). Public IPs, Tailscale (CGNAT) IPs, LAN IPs, and the Wazuh manager hostname are redacted in the images. Raw captures and the full Wazuh PDF export are not published.
+Sanitized command records plus seven cropped screenshots (six annotated) under [`../assets/evidence/`](../assets/evidence/). Public IPs, Tailscale (CGNAT) IPs, LAN IPs, and the Wazuh manager hostname are redacted in the images. Raw captures and the full Wazuh PDF export are not published.
 
 ## Annotated Screenshot Gallery (`assets/evidence/`)
 
@@ -12,6 +12,7 @@ Sanitized command records plus six cropped, annotated screenshots under [`../ass
 | [`04-openssh-hardening-validation.png`](../assets/evidence/04-openssh-hardening-validation.png) | Pre-hardening `sshd -T`, `/etc/ssh` backup, drop-in config, `sshd -t` check, hardened `sshd -T`, and `ssh` reload (`active`) | Cropped to command block; no sensitive IPs present |
 | [`05-lynis-krnl-and-sysctl-validation.png`](../assets/evidence/05-lynis-krnl-and-sysctl-validation.png) | Lynis `KRNL-6000` check output, 3 retained exceptions in `/var/log/lynis.log`, and live `sysctl` runtime readout | Cropped to relevant terminal lines; no sensitive IPs present |
 | [`06-wazuh-monitoring-validation.png`](../assets/evidence/06-wazuh-monitoring-validation.png) | One-month Wazuh Threat Hunting dashboard for `vultr-security-lab` with `0` Level 12+ alerts | Internal AWS manager hostname redacted to `[WAZUH_MGR]` |
+| [`07-wazuh-agent-status.png`](../assets/evidence/07-wazuh-agent-status.png) | Wazuh Overview: `Active (1)`, `Disconnected (0)`, last-24-hour alerts by severity (`0` critical, `0` high) | Cropped to the agent summary and alert panels; no identifiers present |
 
 ## Primary validation record
 

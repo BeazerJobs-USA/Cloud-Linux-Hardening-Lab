@@ -12,6 +12,8 @@ Disconnected agents: 0
 Endpoint:             vultr-security-lab
 ```
 
+Screenshot: [`../assets/evidence/07-wazuh-agent-status.png`](../assets/evidence/07-wazuh-agent-status.png).
+
 See [`../assets/evidence/06-wazuh-monitoring-validation.png`](../assets/evidence/06-wazuh-monitoring-validation.png) for the one-month Wazuh Threat Hunting dashboard for `vultr-security-lab` (`11,857` total events, `0` Level 12+ alerts).
 
 ## SSH configuration monitoring
