@@ -2,34 +2,9 @@
 
 ## Logical architecture
 
-```mermaid
-flowchart LR
-    W[Windows admin workstation]
-    TS[Tailscale overlay]
-    FW[UFW host firewall]
-    SSH[OpenSSH]
-    RDP[XRDP]
-    VM[Ubuntu cloud VM]
-    F2B[Fail2ban]
-    AUD[auditd]
-    SYS[sysctl hardening]
-    WA[Wazuh agent]
-    WM[AWS Wazuh manager]
-    NET[Public Internet]
+![Lab Security Architecture and Trust Boundaries](../assets/architecture/lab-architecture.png)
 
-    W -->|encrypted private path| TS
-    TS --> FW
-    NET -. public SSH blocked .-> FW
-    FW --> SSH
-    FW --> RDP
-    SSH --> VM
-    RDP --> VM
-    VM --> F2B
-    VM --> AUD
-    VM --> SYS
-    VM --> WA
-    WA --> WM
-```
+*(Editable vector source: [`../assets/architecture/lab-architecture.svg`](../assets/architecture/lab-architecture.svg))*
 
 ## Trust boundaries
 

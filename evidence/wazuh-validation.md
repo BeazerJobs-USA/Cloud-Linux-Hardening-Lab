@@ -12,9 +12,11 @@ Disconnected agents: 0
 Endpoint:             vultr-security-lab
 ```
 
+See [`../assets/evidence/06-wazuh-monitoring-validation.png`](../assets/evidence/06-wazuh-monitoring-validation.png) for the one-month Wazuh Threat Hunting dashboard for `vultr-security-lab` (`11,857` total events, `0` Level 12+ alerts).
+
 ## SSH configuration monitoring
 
-The exported threat hunting report recorded the custom SSH configuration rule:
+The exported threat hunting report (covering `2026-10-09` to `2026-11-09`) recorded the custom SSH configuration rule:
 
 ```text
 Rule ID:     100100
@@ -40,6 +42,8 @@ Rule 550   Integrity checksum changed                                273
 Rule 554   File added to the system                                  153
 Rule 553   File deleted                                              119
 ```
+
+The dashboard's "Authentication success" tile (`245`) counts every alert in Wazuh's `authentication_success` group, which includes PAM session events as well as sshd logins, so it is higher than the sshd-only Rule 5715 count (`32`).
 
 These values are environmental context from the report window. They are not used to claim a successful compromise or a controlled attack.
 

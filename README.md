@@ -1,147 +1,159 @@
 # Cloud Linux Hardening Lab
 
-![Repository checks](https://github.com/BeazerJobs-USA/Cloud-Linux-Hardening-Lab/actions/workflows/repo-checks.yml/badge.svg)
+![Cloud Linux Hardening Lab Banner](assets/project-cover.png)
 
-A hands on Ubuntu cloud security project that reduces remote attack surface, moves administration to a private access path, hardens SSH and kernel controls, and validates every major change through connectivity tests, service checks, Lynis, auditd, Fail2ban, and Wazuh.
+[![Repository checks](https://github.com/BeazerJobs-USA/Cloud-Linux-Hardening-Lab/actions/workflows/repo-checks.yml/badge.svg)](https://github.com/BeazerJobs-USA/Cloud-Linux-Hardening-Lab/actions/workflows/repo-checks.yml)
 
-## 60 second review
+Ubuntu cloud VM hardening lab: I removed direct public SSH exposure by moving administrative access behind a Tailscale private overlay, tightened OpenSSH and selected kernel controls, and confirmed the Wazuh agent kept reporting after the changes.
 
-**Problem:** The host already used key only SSH with root login disabled, but TCP/22 was still allowed from anywhere by UFW.
+---
 
-**Design change:** Administrative SSH was moved behind Tailscale and the generic public SSH rules were removed.
+## Summary
 
-**Hardening:** OpenSSH session controls and forwarding features were tightened. Selected kernel and IPv4 settings were hardened after a Lynis audit.
+* **Host:** Ubuntu 26.04 cloud VM (`Security-Lab` / Wazuh endpoint `vultr-security-lab`).
+* **Problem:** SSH was already key-only (`PermitRootLogin no`, `PasswordAuthentication no`), but **UFW still allowed TCP/22 from `Anywhere`**, so the daemon was reachable from the public Internet.
+* **What I changed:** Added a UFW rule for `tailscale0`, confirmed a second private SSH session, then removed the generic IPv4 and IPv6 TCP/22 rules. Applied an OpenSSH drop-in config, tuned selected kernel and IPv4 `sysctl` values (with documented exceptions), and checked that services and monitoring stayed up.
+* **Results:** `Test-NetConnection` from my workstation succeeded over Tailscale (`True`) and failed over the public path (`False`). `sshd -T` and live `sysctl` matched the intended settings. Lynis hardening index went from **69 to 73** after the SSH changes *(advisory metric)*. Wazuh recorded the SSH config changes (`Rule 100100`) and the SCA `LogLevel` check passing, with `vultr-security-lab` still active.
+* **Evidence:** [Evidence Gallery](#evidence-gallery), [Troubleshooting Case Study](docs/troubleshooting-case-study.md), and command records in [`evidence/validation-evidence.md`](evidence/validation-evidence.md).
 
-**Validation:** Private SSH remained reachable, public TCP/22 failed, core security services stayed active, and Wazuh continued to record endpoint activity and SSH configuration changes.
+---
 
-**Measured result:** Lynis hardening index improved from **69 to 73** after SSH remediation. Remaining scanner deviations were reviewed and documented instead of changed blindly.
+## Lab Environment
 
-## What I implemented
+| Component | Detail |
+| --- | --- |
+| **Environment** | Controlled Ubuntu cloud VM (`Security-Lab` / agent `vultr-security-lab`) |
+| **Operating System** | Ubuntu 26.04 |
+| **Administrative Access** | Tailscale private overlay (`tailscale0`), key-only OpenSSH on TCP/22 |
+| **Perimeter & Host Controls** | UFW (`deny incoming`), OpenSSH drop-in, Fail2ban, `auditd`, `sysctl`, Lynis 3.1.6 |
+| **Monitoring Platform** | Wazuh agent streaming to an external AWS Wazuh manager |
+| **Verification Approach** | Dual-path `Test-NetConnection`, `sshd -T`, live `sysctl`, `systemctl`, Wazuh telemetry |
 
-| Control area | Before | After |
-| --- | --- | --- |
-| SSH network exposure | TCP/22 allowed from anywhere | TCP/22 restricted to `tailscale0`; public TCP/22 blocked |
-| Root SSH login | Disabled | Disabled |
-| Password SSH login | Disabled | Disabled |
-| Public key SSH | Enabled | Enabled |
-| Max authentication attempts | 6 | 3 |
-| SSH sessions per connection | 10 | 2 |
-| X11 forwarding | Enabled | Disabled |
-| TCP forwarding | Enabled | Disabled |
-| Agent forwarding | Enabled | Disabled |
-| SSH logging | INFO | VERBOSE |
-| Kernel pointer exposure | `kernel.kptr_restrict=1` | `kernel.kptr_restrict=2` |
-| Setuid core dumps | `fs.suid_dumpable=2` | `fs.suid_dumpable=0` |
-| Suspicious IPv4 logging | Disabled | Enabled with `log_martians=1` |
-| ICMP redirects | Enabled | Disabled |
-| Lynis hardening index | 69 | 73 after SSH remediation |
-| Monitoring | Wazuh agent active | Wazuh remained active and recorded SSH configuration changes |
+---
 
-## Architecture
+## Security Objective and Key Outcomes
 
-```mermaid
-flowchart LR
-    A[Windows admin workstation] -->|Tailscale private overlay| T[Tailscale]
-    T -->|SSH| U[UFW on Ubuntu cloud VM]
-    I[Public Internet] -. TCP 22 blocked .-> U
-    U --> S[OpenSSH]
-    U --> R[XRDP restricted to tailscale0]
-    S --> H[Hardened Ubuntu host]
-    H --> F[Fail2ban]
-    H --> D[auditd]
-    H --> K[sysctl hardening]
-    H --> W[Wazuh agent]
-    W --> M[AWS Wazuh manager]
-```
+> **Status key:** **VERIFIED** = backed by screenshots and command output in this repo. **DOCUMENTED / ADVISORY** = recorded in my lab notes or scanner reports, with version/benchmark caveats.
 
-The security boundary is not a nonstandard SSH port. OpenSSH still listens on port 22, while UFW controls which interface can reach it.
+| Control Area | Before | After | Status |
+| --- | --- | --- | --- |
+| **SSH Network Exposure** | UFW allowed `22/tcp` & `22/tcp (v6)` from `Anywhere` | Restricted to `tailscale0`; public TCP/22 blocked (`False`) | **VERIFIED** |
+| **SSH Authentication** | Root & password login disabled; key-only active | Preserved unchanged; private SSH verified | **VERIFIED** |
+| **OpenSSH Session Limits** | `MaxAuthTries 6`, `MaxSessions 10` | `MaxAuthTries 3`, `MaxSessions 2` | **VERIFIED** |
+| **SSH Forwarding & Logs** | X11/TCP/Agent forwarding `yes`; `LogLevel INFO` | Forwarding disabled (`no`); `LogLevel VERBOSE` | **VERIFIED** |
+| **Kernel & IPv4 Controls** | `kptr_restrict=1`, `suid_dumpable=2`, `sysrq=176`, `log_martians=0`, `send_redirects=1` | `kptr_restrict=2`, `suid_dumpable=0`, `sysrq=0`, `log_martians=1`, `send_redirects=0` | **VERIFIED** |
+| **Accepted Exceptions** | `rp_filter=2`, `unprivileged_bpf_disabled=2`, `modules_disabled=0` | Intentionally retained for Tailscale & lab reversibility | **VERIFIED** |
+| **Lynis Hardening Index** | `69` across 261 baseline tests | `73` after SSH remediation *(Lynis score, not a compliance grade)* | **DOCUMENTED** |
+| **Wazuh Telemetry** | Agent active (`vultr-security-lab`) | Active (`1`), `Rule 100100` (`16`), SCA `LogLevel` passed | **VERIFIED** (dashboard) / **DOCUMENTED** (report) |
 
-## Security engineering decisions
+---
 
-| Decision | Why | How it was validated |
-| --- | --- | --- |
-| Restrict SSH to Tailscale | Remove direct Internet administration without losing remote access | Tailscale TCP/22 succeeded while public TCP/22 failed |
-| Keep SSH on port 22 | Port changes do not replace access control | Public reachability was removed at the firewall layer |
-| Disable unused SSH forwarding features | Reduce unnecessary capability available to authenticated sessions | `sshd -T` confirmed effective values |
-| Increase SSH logging to VERBOSE | Improve authentication context for investigation | Effective OpenSSH configuration and Wazuh telemetry were checked |
-| Keep `rp_filter=2` | Preserve compatibility with overlay and asymmetric networking behavior | Tailscale connectivity succeeded after sysctl changes |
-| Keep `kernel.unprivileged_bpf_disabled=2` | Unprivileged BPF remains disabled while the setting remains administratively reversible | Value was rechecked after remediation |
-| Keep `kernel.modules_disabled=0` | Avoid permanently blocking module loading until reboot in a learning lab | Documented as an accepted Lynis deviation |
+## Architecture Overview
 
-See [docs/decision-log.md](docs/decision-log.md) for the complete reasoning and [docs/threat-model.md](docs/threat-model.md) for assets, trust boundaries, threats, assumptions, and residual risk.
+![Lab Security Architecture and Trust Boundaries](assets/architecture/lab-architecture.png)
 
-## Evidence and validation
+OpenSSH continues listening on standard TCP/22 rather than relying on an alternate port. The security boundary is enforced at the host firewall layer (`UFW`), permitting administrative SSH and XRDP (`3389/tcp`) exclusively over `tailscale0` while dropping unsolicited public inbound traffic. See [`docs/architecture.md`](docs/architecture.md) for trust boundaries and recovery safeguards.
 
-The public repo uses sanitized command outputs instead of raw desktop screenshots. This keeps the proof reviewable without publishing public IP addresses, Tailscale addresses, private keys, credentials, or unrelated workstation content.
+---
 
-The primary evidence record is [evidence/validation-evidence.md](evidence/validation-evidence.md). It contains:
+## Before-and-After Security Posture
 
-1. SSH authentication baseline
-2. Fail2ban activity
-3. auditd watch rules
-4. active security services
-5. initial UFW exposure
-6. Tailscale only SSH validation
-7. OpenSSH values before and after hardening
-8. Lynis hardening index change
-9. kernel and network values before and after remediation
-10. residual Lynis deviations and accepted exceptions
-11. Wazuh monitoring validation after hardening
+![Security Posture Before and After Hardening](assets/diagrams/security-posture-before-after.png)
 
-## Wazuh monitoring validation
+I reviewed each scanner suggestion before changing anything. For example, `net.ipv4.conf.all.rp_filter=2` was intentionally retained to preserve compatibility with Tailscale overlay routing. See [`docs/decision-log.md`](docs/decision-log.md) and [`docs/threat-model.md`](docs/threat-model.md).
 
-Wazuh remained an independent observability layer throughout the hardening work.
+---
 
-The exported threat hunting report recorded:
+## Remediation Workflow
 
-```text
-Rule 100100
-SSH configuration file modified on
-Level 8
-Count 16
-```
+![Remediation and Verification Workflow](assets/diagrams/remediation-workflow.png)
 
-Wazuh Security Configuration Assessment also recorded several SSH controls changing from failed to passed, including `LogLevel`, which directly corresponds to the change from INFO to VERBOSE in this project.
+---
 
-See [docs/monitoring-validation.md](docs/monitoring-validation.md).
+## Troubleshooting Case Study
 
-## Validation automation
+How I diagnosed the public SSH exposure and fixed it without locking myself out:
 
-A non destructive validation script is included at [`scripts/validate-host.sh`](scripts/validate-host.sh). It checks the effective SSH configuration, service state, selected sysctl values, UFW rules, Fail2ban, and auditd watches.
+1. **Original Problem:** Key-only OpenSSH remained exposed to `Anywhere` on TCP/22 alongside ongoing Internet scanning activity.
+2. **Investigation:** Correlated `ufw status numbered`, `ss -tulpn`, `iptables -S`, and `sshd -T` to confirm the public exposure gap and leverage the existing `tailscale0` pattern used by XRDP.
+3. **Recovery / Remediation:** Scoped SSH to `tailscale0`, validated a second private session first, sequentially removed generic IPv4/IPv6 public rules, hardened OpenSSH via drop-in config, and applied selected `sysctl` controls.
+4. **Verification:** Confirmed external reachability (`Tailscale: True` vs. `Public: False`), active core services, runtime `sysctl` values, and continued Wazuh telemetry.
 
-A GitHub Actions workflow runs on pushes and pull requests to validate the shell script syntax and confirm that the core documentation and configuration artifacts remain present.
+**[Read the full Troubleshooting Case Study](docs/troubleshooting-case-study.md)** · See also individual lab cases in [`cases/`](cases/case-001-secure-linux-baseline.md).
 
-This automation does not claim to replace host testing. It exists to keep the repository itself maintainable and reproducible.
+---
 
-## Case documentation
+## Evidence Gallery
 
-1. [Case 001: Secure Linux Baseline and Host Controls](cases/case-001-secure-linux-baseline.md)
-2. [Case 002: Private Administrative Access](cases/case-002-private-administrative-access.md)
-3. [Case 003: Security Audit and Remediation](cases/case-003-security-audit-and-remediation.md)
+Cropped and annotated captures from my terminal sessions and the Wazuh dashboard. Public, Tailscale, LAN, and Wazuh manager identifiers are redacted; the uncropped originals are kept out of the repo.
 
-Each case follows the same pattern: initial condition, security concern, implementation, validation, tradeoff, and outcome.
+### 1. Initial UFW Firewall and Listening Socket Baseline
+![Annotated screenshot of initial UFW baseline showing public 22/tcp allow rules and ss output](assets/evidence/01-ufw-exposure-baseline.png)
+*Before remediation: `3389/tcp` (XRDP) was already restricted to `tailscale0`, but generic `22/tcp` and `22/tcp (v6)` rules remained `ALLOW IN Anywhere` with `sshd` listening on `0.0.0.0:22` and `[::]:22`.*
 
-## Configuration artifacts
+### 2. Controlled Removal of Public SSH Rules Over Tailscale
+![Annotated screenshot showing Tailscale login check, UFW rule deletion, and final tailscale0-only policy](assets/evidence/02-ufw-private-ssh-cutover.png)
+*Cutover done inside an active Tailscale SSH session (`[TS_ADMIN_IP]` redacted). Generic IPv4 and IPv6 `22/tcp` rules were removed one at a time, rechecking rule numbers in between, leaving `Default: deny (incoming)` with only `22/tcp` and `3389/tcp` allowed on `tailscale0`.*
 
-The repository includes the exact security settings used for the completed remediation:
+### 3. External Reachability Check: Public Path
+![Annotated Windows PowerShell Test-NetConnection result showing public TCP/22 failed while ping succeeded](assets/evidence/03-private-vs-public-ssh-validation.png)
+*Run from my Windows workstation (public IP and LAN IP redacted). `Test-NetConnection` to the VM's public address on port 22 failed over `Wi-Fi` (`TcpTestSucceeded : False`) while `PingSucceeded : True` showed the server was still online. The Tailscale-path test from the same session (`TcpTestSucceeded : True`) is in the [text record](evidence/validation-evidence.md#7-private-versus-public-tcp22-validation).*
 
-* [`configs/99-ssh-security-hardening.conf`](configs/99-ssh-security-hardening.conf)
-* [`configs/99-security-hardening.conf`](configs/99-security-hardening.conf)
+### 4. OpenSSH Hardening, Syntax Validation, and Reload
+![Annotated screenshot showing OpenSSH pre-hardening baseline, backup, sshd -t check, and post-reload values](assets/evidence/04-openssh-hardening-validation.png)
+*`/etc/ssh` backup, drop-in configuration in `/etc/ssh/sshd_config.d/99-security-hardening.conf`, clean `sshd -t` validation, and `sshd -T` verification (`MaxAuthTries 3`, `MaxSessions 2`, forwarding disabled, `LogLevel VERBOSE`) with `ssh` remaining `active`.*
 
-These are lab artifacts, not universal baselines. They should be reviewed against another host's role, networking, and operational requirements before reuse.
+### 5. Lynis `KRNL-6000` Audit and Live `sysctl` Verification
+![Annotated screenshot showing Lynis KRNL-6000 checks, 3 retained deviations in lynis.log, and live sysctl values](assets/evidence/05-lynis-krnl-and-sysctl-validation.png)
+*Lynis `KRNL-6000` sysctl checks, inspection of the three intentionally retained deviations in `/var/log/lynis.log` (`modules_disabled=0`, `unprivileged_bpf_disabled=2`, `rp_filter=2`), and live `sysctl` confirmation of all applied hardening values.*
 
-## Reproduction
+### 6. Wazuh Monitoring Telemetry
+![Annotated Wazuh Threat Hunting dashboard showing active vultr-security-lab telemetry](assets/evidence/06-wazuh-monitoring-validation.png)
+*One-month Wazuh Threat Hunting view (manager hostname redacted to `[WAZUH_MGR]`) for `vultr-security-lab`: `11,857` events, `6,537` authentication failures, and `0` Level 12+ alerts. The alert charts show quiet periods around Oct 19–30 and Nov 2–3.*
 
-[docs/reproduction.md](docs/reproduction.md) documents the implementation and validation sequence using placeholder addresses.
+---
 
-[docs/architecture.md](docs/architecture.md) documents the trust boundaries and control placement.
+## Technical Implementation and Validation
 
-## Repository structure
+* **Configuration Artifacts:** [`configs/99-ssh-security-hardening.conf`](configs/99-ssh-security-hardening.conf) and [`configs/99-security-hardening.conf`](configs/99-security-hardening.conf)
+* **Automated Host Verification Script:** [`scripts/validate-host.sh`](scripts/validate-host.sh) (read-only checks for effective `sshd -T`, service status, `sysctl`, UFW, Fail2ban, and `auditd`; syntax-checked via [`.github/workflows/repo-checks.yml`](.github/workflows/repo-checks.yml))
+* **Wazuh & Lynis Analysis:** [`docs/monitoring-validation.md`](docs/monitoring-validation.md), [`evidence/wazuh-validation.md`](evidence/wazuh-validation.md), and [`evidence/lynis/README.md`](evidence/lynis/README.md) — covering Wazuh Overview (`Active: 1`, `Disconnected: 0`), exported Threat Hunting report (`Rule 100100` count `16`), and SCA `LogLevel` status changing from `failed` to `passed`.
+* **Reproduction Guide:** [`docs/reproduction.md`](docs/reproduction.md)
+
+---
+
+## Documentation Navigation
+
+| Topic | Documentation & Artifacts |
+| --- | --- |
+| **Case Studies** | [`docs/troubleshooting-case-study.md`](docs/troubleshooting-case-study.md) · [`case-001`](cases/case-001-secure-linux-baseline.md) · [`case-002`](cases/case-002-private-administrative-access.md) · [`case-003`](cases/case-003-security-audit-and-remediation.md) |
+| **Architecture & Design** | [`docs/architecture.md`](docs/architecture.md) · [`docs/decision-log.md`](docs/decision-log.md) · [`docs/threat-model.md`](docs/threat-model.md) |
+| **Validation & Monitoring** | [`evidence/README.md`](evidence/README.md) · [`evidence/validation-evidence.md`](evidence/validation-evidence.md) · [`evidence/wazuh-validation.md`](evidence/wazuh-validation.md) · [`docs/monitoring-validation.md`](docs/monitoring-validation.md) |
+| **Hardening & Reproduction** | [`configs/99-ssh-security-hardening.conf`](configs/99-ssh-security-hardening.conf) · [`configs/99-security-hardening.conf`](configs/99-security-hardening.conf) · [`scripts/validate-host.sh`](scripts/validate-host.sh) · [`docs/reproduction.md`](docs/reproduction.md) |
+| **Visual Assets** | [`assets/project-cover.svg`](assets/project-cover.svg) · [`assets/architecture/`](assets/architecture/lab-architecture.svg) · [`assets/diagrams/`](assets/diagrams/security-posture-before-after.svg) · [`assets/evidence/`](assets/evidence/01-ufw-exposure-baseline.png) |
+
+<details>
+<summary>Repository File Tree</summary>
 
 ```text
 Cloud-Linux-Hardening-Lab/
 ├── README.md
 ├── SECURITY.md
+├── .github/workflows/repo-checks.yml
+├── assets/
+│   ├── project-cover.png / .svg
+│   ├── architecture/
+│   │   └── lab-architecture.png / .svg
+│   ├── diagrams/
+│   │   ├── remediation-workflow.png / .svg
+│   │   └── security-posture-before-after.png / .svg
+│   └── evidence/
+│       ├── 01-ufw-exposure-baseline.png
+│       ├── 02-ufw-private-ssh-cutover.png
+│       ├── 03-private-vs-public-ssh-validation.png
+│       ├── 04-openssh-hardening-validation.png
+│       ├── 05-lynis-krnl-and-sysctl-validation.png
+│       └── 06-wazuh-monitoring-validation.png
 ├── cases/
 │   ├── case-001-secure-linux-baseline.md
 │   ├── case-002-private-administrative-access.md
@@ -149,33 +161,29 @@ Cloud-Linux-Hardening-Lab/
 ├── configs/
 │   ├── 99-security-hardening.conf
 │   └── 99-ssh-security-hardening.conf
-├── .github/
-│   └── workflows/
-│       └── repo-checks.yml
 ├── docs/
 │   ├── architecture.md
 │   ├── decision-log.md
 │   ├── monitoring-validation.md
 │   ├── reproduction.md
-│   └── threat-model.md
+│   ├── threat-model.md
+│   └── troubleshooting-case-study.md
 ├── evidence/
 │   ├── README.md
 │   ├── validation-evidence.md
 │   ├── wazuh-validation.md
-│   └── lynis/
-│       └── README.md
+│   └── lynis/README.md
 └── scripts/
     └── validate-host.sh
 ```
 
-## Skills demonstrated
+</details>
 
-Ubuntu Linux administration, OpenSSH hardening, Tailscale private administration, UFW firewall policy, Fail2ban, auditd, Wazuh endpoint monitoring, Lynis auditing, sysctl hardening, configuration validation, connectivity testing, evidence handling, change safety, and risk based remediation.
+---
 
-## Scope and limitations
+## Scope and Limitations
 
-This is a controlled cloud lab, not a claim of production deployment or formal compliance.
-
-Lynis 3.1.6 reported that its version was more than six months old and did not have an end of life database entry for Ubuntu 26.04. Wazuh Security Configuration Assessment referenced a CIS Ubuntu 24.04 benchmark while the host was Ubuntu 26.04. Those scanner results were therefore treated as advisory evidence.
-
-The project does not claim exploitation, malware activity, compromise, or incident containment that did not occur.
+* **Controlled Lab Environment:** This repository documents a cloud hardening lab rather than a formal compliance certification or production deployment claim.
+* **Scanner Compatibility Caveats:** Lynis 3.1.6 reported that its build was more than six months old and lacked an end-of-life database entry for Ubuntu 26.04. Wazuh Security Configuration Assessment evaluated a CIS Ubuntu 24.04 LTS v1.0.0 benchmark against an Ubuntu 26.04 host. Both scanner outputs are treated as advisory engineering signals rather than authoritative compliance grades.
+* **Incident Scope:** Authentication failure counts and brute-force telemetry reported by Fail2ban and Wazuh reflect background Internet probing context; this project does not claim exploitation, malware infection, compromise, or incident containment.
+* **Sanitization Policy:** See [`SECURITY.md`](SECURITY.md) for excluded secrets and redaction rules.

@@ -1,6 +1,17 @@
 # Evidence Index
 
-The public repository uses sanitized text evidence instead of raw desktop screenshots. This preserves the commands and observed results while avoiding disclosure of public IP addresses, Tailscale addresses, credentials, private keys, or unrelated workstation content.
+Sanitized command records plus six cropped, annotated screenshots under [`../assets/evidence/`](../assets/evidence/). Public IPs, Tailscale (CGNAT) IPs, LAN IPs, and the Wazuh manager hostname are redacted in the images. Raw captures and the full Wazuh PDF export are not published.
+
+## Annotated Screenshot Gallery (`assets/evidence/`)
+
+| File | What It Shows | Redaction |
+| --- | --- | --- |
+| [`01-ufw-exposure-baseline.png`](../assets/evidence/01-ufw-exposure-baseline.png) | Initial `ufw status numbered`, `ss -tulpn`, and `iptables -S` showing public `22/tcp` rules alongside `3389/tcp` on `tailscale0` | Cropped to command block; no sensitive IPs present |
+| [`02-ufw-private-ssh-cutover.png`](../assets/evidence/02-ufw-private-ssh-cutover.png) | Tailscale session check, removal of generic IPv4/IPv6 `22/tcp` rules, and final `ufw status verbose` policy | Tailscale workstation IP redacted to `[TS_ADMIN_IP]` |
+| [`03-private-vs-public-ssh-validation.png`](../assets/evidence/03-private-vs-public-ssh-validation.png) | PowerShell `Test-NetConnection` to the public address: TCP/22 failed (`False`) while ICMP succeeded (`True`). Cropped to the public-path test; the Tailscale-path result is in [`validation-evidence.md`](validation-evidence.md#7-private-versus-public-tcp22-validation) | Public VM IP and workstation LAN IP redacted |
+| [`04-openssh-hardening-validation.png`](../assets/evidence/04-openssh-hardening-validation.png) | Pre-hardening `sshd -T`, `/etc/ssh` backup, drop-in config, `sshd -t` check, hardened `sshd -T`, and `ssh` reload (`active`) | Cropped to command block; no sensitive IPs present |
+| [`05-lynis-krnl-and-sysctl-validation.png`](../assets/evidence/05-lynis-krnl-and-sysctl-validation.png) | Lynis `KRNL-6000` check output, 3 retained exceptions in `/var/log/lynis.log`, and live `sysctl` runtime readout | Cropped to relevant terminal lines; no sensitive IPs present |
+| [`06-wazuh-monitoring-validation.png`](../assets/evidence/06-wazuh-monitoring-validation.png) | One-month Wazuh Threat Hunting dashboard for `vultr-security-lab` with `0` Level 12+ alerts | Internal AWS manager hostname redacted to `[WAZUH_MGR]` |
 
 ## Primary validation record
 
@@ -33,4 +44,4 @@ The public repository uses sanitized text evidence instead of raw desktop screen
 
 ## Evidence handling
 
-The original screenshots and exported report were used during analysis but are not required to reproduce the public claims. The repository intentionally favors sanitized, reviewable evidence over raw screenshots containing environment identifiers.
+Uncropped screenshots and the full exported Wazuh PDF report are kept out of the repo. Only sanitized text records and redacted visual captures are published here.

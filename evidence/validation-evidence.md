@@ -241,7 +241,7 @@ These were reviewed rather than blindly changed. The rationale for retaining eac
 
 ## Evidence handling
 
-Raw screenshots were used during the lab but are not required to reproduce the claims above. Public documentation intentionally omits public IP addresses, Tailscale addresses, credentials, private keys, and unrelated desktop information.
+Sanitized, cropped, and annotated copies of key terminal and dashboard screenshots are provided in [`../assets/evidence/`](../assets/evidence/). Raw uncropped screenshots containing unredacted public IP addresses, Tailscale addresses, local workstation addresses, or internal manager hostnames remain outside the public repository.
 
 
 ## 14. Wazuh monitoring validation
