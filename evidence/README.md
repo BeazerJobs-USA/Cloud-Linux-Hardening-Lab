@@ -1,6 +1,6 @@
 # Evidence Index
 
-Sanitized command records plus seven cropped screenshots (six annotated) under [`../assets/evidence/`](../assets/evidence/). Public IPs, Tailscale (CGNAT) IPs, LAN IPs, and the Wazuh manager hostname are redacted in the images. Raw captures and the full Wazuh PDF export are not published.
+Sanitized command records plus seven cropped, annotated screenshots under [`../assets/evidence/`](../assets/evidence/). Public IPs, Tailscale (CGNAT) IPs, LAN IPs, and the Wazuh manager hostname are redacted in the images. Raw captures and the full Wazuh PDF export are not published.
 
 ## Annotated Screenshot Gallery (`assets/evidence/`)
 

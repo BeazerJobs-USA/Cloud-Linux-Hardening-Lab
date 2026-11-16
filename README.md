@@ -146,6 +146,7 @@ Cloud-Linux-Hardening-Lab/
 ├── .github/workflows/repo-checks.yml
 ├── assets/
 │   ├── project-cover.png / .svg
+│   ├── project-cover-social.png / .svg
 │   ├── architecture/
 │   │   └── lab-architecture.png / .svg
 │   ├── diagrams/
